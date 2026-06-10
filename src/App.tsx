@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { loadPdf, type LoadedPdf } from "@/lib/pdf/loader";
 import { readSharedPdf } from "@/lib/pwa/shareTarget";
 import { readUrlPdf } from "@/lib/pwa/urlPdf";
+import { readPdfUrlParam, fetchPdfFromUrl } from "@/lib/pwa/remotePdf";
 import { exportPdf } from "@/lib/pdf/exporter";
 import { useAnnotations, type Annotation } from "@/state/annotations";
 import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates";
@@ -58,9 +59,25 @@ export default function App() {
         await handleFile(shared, "shared.pdf");
         return;
       }
-      // iOS Shortcut: base64 PDF in the URL fragment.
-      const fromUrl = readUrlPdf();
-      if (fromUrl) await handleFile(fromUrl, "shared.pdf");
+      // iOS Shortcut: base64 PDF in the URL fragment (small files only).
+      const fromData = readUrlPdf();
+      if (fromData) {
+        await handleFile(fromData, "shared.pdf");
+        return;
+      }
+      // A PDF link: ?url= / #url= (client-side fetch; also used by the ephemeral
+      // upload flow, which hands back a same-origin /api/pdf?id=... URL).
+      const srcUrl = readPdfUrlParam();
+      if (srcUrl) {
+        window.history.replaceState({}, "", window.location.pathname);
+        try {
+          const buf = await fetchPdfFromUrl(srcUrl);
+          await handleFile(buf, "shared.pdf");
+        } catch {
+          setError("Couldn't load that PDF link — the host may block cross-origin access.");
+          toast.error("Could not load PDF from link");
+        }
+      }
     })();
   }, [handleFile]);
 

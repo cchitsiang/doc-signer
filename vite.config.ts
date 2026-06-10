@@ -23,8 +23,10 @@ export default defineConfig({
         background_color: "#F5F4EE",
         theme_color: "#D97757",
         icons: [
-          { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
-          { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
+          { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: "/maskable-192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
+          { src: "/maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
         share_target: {
           action: "/share-target",

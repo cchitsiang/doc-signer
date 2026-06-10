@@ -35,7 +35,9 @@ export default defineConfig({
           },
         },
       },
-      devOptions: { enabled: true, type: "module" },
+      // Keep the service worker out of `npm run dev` — caching during development
+      // serves stale code and masks changes. It still builds for production.
+      devOptions: { enabled: false, type: "module" },
     }),
   ],
   resolve: {

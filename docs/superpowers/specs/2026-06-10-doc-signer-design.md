@@ -38,7 +38,8 @@ initial app load.
 
 - **Vite + React + TypeScript** — application base.
 - **Tailwind CSS + shadcn/ui** — styling and UI primitives (Radix-based,
-  components copied into the repo via the shadcn CLI).
+  components copied into the repo via the shadcn CLI). Themed to resemble
+  Claude's visual design (see Theme below).
 - **pdfjs-dist (pdf.js)** — render each PDF page to a canvas for viewing.
 - **pdf-lib** — write annotations into the PDF bytes; flatten and save.
 - **signature_pad** — smooth freehand signature capture on a canvas; export PNG.
@@ -183,7 +184,24 @@ baked in until export, so editing stays non-destructive.
 - **Web Share API with files** (re-share to WhatsApp) is likewise best on
   Android/Chromium; degrade to Download elsewhere.
 
+## Theme (Claude-like)
+
+The UI is themed to resemble Claude's visual design via Tailwind/shadcn CSS
+variables (configured in `globals.css` / `tailwind.config`):
+
+- **Background:** warm cream / paper (`#F5F4EE`-ish), not stark white.
+- **Surface/cards:** slightly lighter warm off-white.
+- **Primary accent:** Claude terracotta-coral (`#D97757` family) for primary
+  buttons, active tool toggle, and focus rings.
+- **Text:** near-black warm gray (`#2B2A27`-ish); muted gray for secondary text.
+- **Borders:** soft warm gray, low contrast.
+- **Typography:** clean humanist sans (system/Inter-like); generous spacing,
+  rounded corners (shadcn default radius), subtle shadows.
+
+These map onto shadcn's token set (`--background`, `--primary`,
+`--primary-foreground`, `--border`, `--ring`, etc.) so all components inherit the
+palette. Light mode only for v1.
+
 ## Open Questions
 
-None blocking. Default app name "Doc Signer"; theme uses shadcn defaults
-(adjustable later).
+None blocking. Default app name "Doc Signer".

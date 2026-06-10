@@ -65,7 +65,7 @@ Create the Shortcut (Shortcuts app → **+**):
 
 1. Shortcut settings → **Show in Share Sheet** → accept **Files / PDFs**.
 2. Action **Base64 Encode** — input: **Shortcut Input**. (Set _Line Breaks: None_.)
-3. Action **Text**: `https://doc-signer-beta.vercel.app/#pdf=` then insert the
+3. Action **Text**: `https://doc-signer-beige.vercel.app/#pdf=` then insert the
    **Base64 Encoded** variable right after the `=`.
 4. Action **Open URLs** — input: the **Text** from step 3.
 5. Name it e.g. "Sign PDF".

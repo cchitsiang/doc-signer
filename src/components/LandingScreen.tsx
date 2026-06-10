@@ -1,6 +1,9 @@
 import { useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { isIOS } from "@/lib/platform";
+import { IOS_SHORTCUT_URL } from "@/config";
+import { Smartphone } from "lucide-react";
 
 interface Props {
   onFile: (bytes: ArrayBuffer, name: string) => void;
@@ -18,7 +21,7 @@ export function LandingScreen({ onFile, error }: Props) {
 
   return (
     <div
-      className="min-h-screen bg-background text-foreground flex items-center justify-center p-6"
+      className="relative min-h-screen bg-background text-foreground flex items-center justify-center p-6"
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
@@ -41,6 +44,18 @@ export function LandingScreen({ onFile, error }: Props) {
         {error && <p className="text-destructive text-sm">{error}</p>}
         <p className="text-xs text-muted-foreground">or drag &amp; drop a PDF here</p>
       </Card>
+
+      {IOS_SHORTCUT_URL && isIOS() && (
+        <a
+          href={IOS_SHORTCUT_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="text-muted-foreground hover:text-primary absolute bottom-6 inset-x-0 mx-auto flex w-fit items-center gap-1.5 text-sm transition-colors"
+        >
+          <Smartphone className="size-4" />
+          Add the “Sign PDF” shortcut to share from WhatsApp
+        </a>
+      )}
     </div>
   );
 }

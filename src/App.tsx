@@ -1,6 +1,7 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { loadPdf, type LoadedPdf } from "@/lib/pdf/loader";
+import { readSharedPdf } from "@/lib/pwa/shareTarget";
 import { exportPdf } from "@/lib/pdf/exporter";
 import { useAnnotations, type Annotation } from "@/state/annotations";
 import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates";
@@ -45,6 +46,13 @@ export default function App() {
   const onGeometry = useCallback((pageIndex: number, geom: PageGeometry) => {
     geometries.current[pageIndex] = geom;
   }, []);
+
+  useEffect(() => {
+    void (async () => {
+      const shared = await readSharedPdf();
+      if (shared) await handleFile(shared, "shared.pdf");
+    })();
+  }, [handleFile]);
 
   function nextId() {
     return `ann_${items.length}_${Date.now()}`;

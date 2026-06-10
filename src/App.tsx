@@ -10,6 +10,7 @@ import { Viewer } from "@/components/Viewer";
 import { Toolbar, type Tool } from "@/components/Toolbar";
 import { OutputActions } from "@/components/OutputActions";
 import { SignatureDialog } from "@/components/SignatureDialog";
+import { TextDialog } from "@/components/TextDialog";
 import {
   download,
   shareToWhatsApp,
@@ -25,6 +26,7 @@ export default function App() {
   const [error, setError] = useState<string>();
   const [tool, setTool] = useState<Tool>(null);
   const [sigOpen, setSigOpen] = useState(false);
+  const [textOpen, setTextOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const { items, dispatch } = useAnnotations();
   const originalBytes = useRef<ArrayBuffer | null>(null);
@@ -54,6 +56,15 @@ export default function App() {
     })();
   }, [handleFile]);
 
+  // Press Escape to deselect the active annotation tool.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setTool(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   function nextId() {
     return `ann_${items.length}_${Date.now()}`;
   }
@@ -61,26 +72,29 @@ export default function App() {
   const onPlace = useCallback(
     (pageIndex: number, at: { x: number; y: number }) => {
       if (!tool) return;
+      pendingPlace.current = { pageIndex, at };
       if (tool === "text") {
-        const text = window.prompt("Enter text");
-        if (!text) return;
-        const ann: Annotation = {
-          id: nextId(),
-          type: "text",
-          pageIndex,
-          rect: { x: at.x, y: at.y, width: Math.max(80, text.length * 12), height: 32 },
-          payload: { text, fontSizePx: 24, color: "#1a1a1a" },
-        };
-        dispatch({ type: "add", annotation: ann });
+        setTextOpen(true);
       } else {
-        // signature or saved -> open dialog, remember where to drop it
-        pendingPlace.current = { pageIndex, at };
+        // signature or saved -> open the signature dialog
         setSigOpen(true);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tool, dispatch, items.length],
+    [tool],
   );
+
+  function onTextConfirm(text: string) {
+    const place = pendingPlace.current ?? { pageIndex: 0, at: { x: 40, y: 40 } };
+    const ann: Annotation = {
+      id: nextId(),
+      type: "text",
+      pageIndex: place.pageIndex,
+      rect: { x: place.at.x, y: place.at.y, width: Math.max(80, text.length * 12), height: 32 },
+      payload: { text, fontSizePx: 24, color: "#1a1a1a" },
+    };
+    dispatch({ type: "add", annotation: ann });
+    pendingPlace.current = null;
+  }
 
   function onSignatureConfirm(dataUrl: string) {
     const place = pendingPlace.current ?? { pageIndex: 0, at: { x: 40, y: 40 } };
@@ -165,6 +179,7 @@ export default function App() {
       </div>
       <Toolbar tool={tool} onTool={setTool} />
       <SignatureDialog open={sigOpen} onOpenChange={setSigOpen} onConfirm={onSignatureConfirm} />
+      <TextDialog open={textOpen} onOpenChange={setTextOpen} onConfirm={onTextConfirm} />
     </div>
   );
 }

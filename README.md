@@ -37,6 +37,13 @@ npm run fmt:check    # oxfmt (check only)
 npm run build && npm run preview
 ```
 
+## Notes
+
+`pdfjs-dist` is pinned to `5.4.624` (exact). Versions ≥ 5.5 call
+`Map.prototype.getOrInsertComputed`, an unshipped TC39 proposal method absent in
+current browsers, which throws during page rendering. Do not bump past 5.4.x until
+that method ships broadly.
+
 ## WhatsApp share target
 
 Install the app to your home screen (Android / Chromium). It then appears in

@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import SignaturePad from "signature_pad";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { SignatureCanvas, type SignatureCanvasHandle } from "@/components/SignatureCanvas";
 import { listSignatures, saveSignature, type SavedSignature } from "@/lib/signature/storage";
+import { UploadCloud, Eraser } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -18,30 +19,32 @@ interface Props {
 }
 
 export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const padRef = useRef<SignaturePad | null>(null);
+  const padRef = useRef<SignatureCanvasHandle>(null);
   const [saved, setSaved] = useState<SavedSignature[]>([]);
+  const [dragging, setDragging] = useState(false);
+  const [tab, setTab] = useState("draw");
 
+  // Load saved signatures each time the dialog opens (App controls `open`, so the
+  // dialog's own onOpenChange does not fire on programmatic open). When saved
+  // signatures exist, open straight to the Saved tab.
   useEffect(() => {
-    if (!open || !canvasRef.current) return;
-    const pad = new SignaturePad(canvasRef.current, { penColor: "#1a1a1a" });
-    padRef.current = pad;
-    setSaved(listSignatures());
-    return () => pad.off();
+    if (!open) return;
+    const sigs = listSignatures();
+    setSaved(sigs);
+    setTab(sigs.length > 0 ? "saved" : "draw");
   }, [open]);
 
   function confirmDrawn(persist: boolean) {
     const pad = padRef.current;
     if (!pad || pad.isEmpty()) return;
-    const dataUrl = pad.toDataURL("image/png");
+    const dataUrl = pad.toDataURL();
     if (persist) saveSignature(dataUrl);
     onConfirm(dataUrl);
     onOpenChange(false);
   }
 
-  function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  function acceptImageFile(file: File | undefined) {
+    if (!file || !file.type.startsWith("image/")) return;
     const reader = new FileReader();
     reader.onload = () => {
       onConfirm(reader.result as string);
@@ -55,25 +58,30 @@ export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add signature</DialogTitle>
+          <DialogDescription>Draw, reuse a saved signature, or upload an image.</DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="draw">
+        <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="draw">Draw</TabsTrigger>
             <TabsTrigger value="saved">Saved</TabsTrigger>
             <TabsTrigger value="upload">Upload</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="draw">
-            <canvas
-              ref={canvasRef}
-              width={460}
-              height={180}
-              className="w-full rounded-md border border-border bg-card touch-none"
-            />
-            <div className="mt-2 flex gap-2">
-              <Button variant="outline" onClick={() => padRef.current?.clear()}>
-                Clear
+          <TabsContent value="draw" className="space-y-3">
+            <div className="relative h-44 w-full overflow-hidden rounded-md border border-border bg-card">
+              <SignatureCanvas ref={padRef} className="h-full w-full" />
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                className="absolute bottom-2 left-2 size-8 rounded-full"
+                onClick={() => padRef.current?.clear()}
+                aria-label="Clear"
+              >
+                <Eraser className="size-4" />
               </Button>
+            </div>
+            <div className="flex justify-end gap-2">
               <Button variant="secondary" onClick={() => confirmDrawn(true)}>
                 Save & use
               </Button>
@@ -84,28 +92,55 @@ export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
           <TabsContent value="saved">
             <div className="grid grid-cols-2 gap-2">
               {saved.length === 0 && (
-                <p className="text-muted-foreground text-sm col-span-2">No saved signatures yet.</p>
+                <p className="text-muted-foreground col-span-2 py-6 text-center text-sm">
+                  No saved signatures yet.
+                </p>
               )}
               {saved.map((s) => (
                 <button
                   key={s.id}
-                  className="rounded-md border border-border bg-card p-2"
+                  className="hover:border-primary rounded-md border border-border bg-card p-2 transition-colors"
                   onClick={() => {
                     onConfirm(s.dataUrl);
                     onOpenChange(false);
                   }}
                 >
-                  <img src={s.dataUrl} alt="saved signature" className="max-h-20 mx-auto" />
+                  <img src={s.dataUrl} alt="saved signature" className="mx-auto max-h-20" />
                 </button>
               ))}
             </div>
           </TabsContent>
 
           <TabsContent value="upload">
-            <input type="file" accept="image/png,image/jpeg" onChange={handleUpload} />
+            <label
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragging(true);
+              }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragging(false);
+                acceptImageFile(e.dataTransfer.files?.[0]);
+              }}
+              className={`flex h-44 cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed text-center transition-colors ${
+                dragging ? "border-primary bg-primary/5" : "border-border bg-card"
+              }`}
+            >
+              <UploadCloud className="text-muted-foreground size-8" />
+              <span className="text-sm font-medium">Drop an image here, or click to browse</span>
+              <span className="text-muted-foreground text-xs">
+                PNG or JPG with a transparent background works best
+              </span>
+              <input
+                type="file"
+                accept="image/png,image/jpeg"
+                className="hidden"
+                onChange={(e) => acceptImageFile(e.target.files?.[0])}
+              />
+            </label>
           </TabsContent>
         </Tabs>
-        <DialogFooter />
       </DialogContent>
     </Dialog>
   );

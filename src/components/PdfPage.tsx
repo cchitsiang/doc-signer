@@ -8,6 +8,7 @@ interface Props {
   pdf: LoadedPdf;
   pageNumber: number; // 1-based
   scale: number;
+  zoom: number;
   annotations: Annotation[];
   onGeometry: (pageIndex: number, geom: PageGeometry) => void;
   onPlace: (pageIndex: number, at: { x: number; y: number }) => void;
@@ -19,6 +20,7 @@ export function PdfPage({
   pdf,
   pageNumber,
   scale,
+  zoom,
   annotations,
   onGeometry,
   onPlace,
@@ -50,7 +52,8 @@ export function PdfPage({
     const host = hostRef.current;
     if (!host) return;
     const r = host.getBoundingClientRect();
-    onPlace(pageIndex, { x: e.clientX - r.left, y: e.clientY - r.top });
+    // r is in zoomed CSS px; map back to the page's unscaled coordinate space.
+    onPlace(pageIndex, { x: (e.clientX - r.left) / zoom, y: (e.clientY - r.top) / zoom });
   }
 
   return (
@@ -58,12 +61,13 @@ export function PdfPage({
       ref={hostRef}
       onClick={handleClick}
       className="relative mx-auto my-4 shadow-sm bg-card"
-      style={{ width: size.w || undefined, height: size.h || undefined }}
+      style={{ width: size.w || undefined, height: size.h || undefined, zoom }}
     >
       {annotations.map((a) => (
         <PlacedAnnotation
           key={a.id}
           annotation={a}
+          zoom={zoom}
           onChange={(rect) => onChangeRect(a.id, rect)}
           onRemove={() => onRemove(a.id)}
         />

@@ -5,11 +5,12 @@ import { X } from "lucide-react";
 
 interface Props {
   annotation: Annotation;
+  zoom: number;
   onChange: (rect: ScreenRect) => void;
   onRemove: () => void;
 }
 
-export function PlacedAnnotation({ annotation, onChange, onRemove }: Props) {
+export function PlacedAnnotation({ annotation, zoom, onChange, onRemove }: Props) {
   const start = useRef<{ px: number; py: number; rect: ScreenRect } | null>(null);
   const mode = useRef<"move" | "resize" | null>(null);
   const { rect } = annotation;
@@ -23,8 +24,9 @@ export function PlacedAnnotation({ annotation, onChange, onRemove }: Props) {
 
   function onPointerMove(e: React.PointerEvent) {
     if (!start.current || !mode.current) return;
-    const dx = e.clientX - start.current.px;
-    const dy = e.clientY - start.current.py;
+    // Deltas are in zoomed CSS px; convert to the page's unscaled space.
+    const dx = (e.clientX - start.current.px) / zoom;
+    const dy = (e.clientY - start.current.py) / zoom;
     const s = start.current.rect;
     if (mode.current === "move") {
       onChange({ ...s, x: s.x + dx, y: s.y + dy });

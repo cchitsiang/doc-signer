@@ -92,7 +92,7 @@ Each module has one purpose, a defined interface, and is independently testable.
 
 - **`annotations/store`** — React state holding the list of placed annotations.
   Each annotation: `{ id, type: 'signature' | 'text', pageIndex, xScreen, yScreen,
-  widthScreen, heightScreen, payload }` where payload is a PNG data URL (signature)
+widthScreen, heightScreen, payload }` where payload is a PNG data URL (signature)
   or `{ text, fontSize, color }` (text). Actions: add, update (move/resize/edit),
   remove, clear. Screen-space coords are the source of truth while editing; export
   converts to PDF space at save time.

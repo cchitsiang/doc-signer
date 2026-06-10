@@ -52,6 +52,7 @@ public/
 ## Task 1: Scaffold Vite + React + TypeScript
 
 **Files:**
+
 - Create: project files via Vite scaffolder (in current empty dir, which already has `.git` and `docs/`)
 
 - [ ] **Step 1: Scaffold into current directory**
@@ -91,6 +92,7 @@ git commit -m "chore: scaffold vite react-ts project"
 ## Task 1b: Replace ESLint with oxc (oxlint + oxfmt)
 
 **Files:**
+
 - Modify: `package.json` (scripts, remove eslint deps)
 - Delete: `eslint.config.js`
 - Create: `.oxlintrc.json`
@@ -154,6 +156,7 @@ git commit -m "chore: replace eslint with oxc (oxlint + oxfmt)"
 ## Task 2: Install Tailwind CSS v4 + path aliases
 
 **Files:**
+
 - Modify: `vite.config.ts`
 - Modify: `tsconfig.json`, `tsconfig.app.json`
 - Modify: `src/index.css`
@@ -170,10 +173,10 @@ npm install -D @types/node
 Replace `vite.config.ts` with:
 
 ```ts
-import path from "path"
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
-import tailwindcss from "@tailwindcss/vite"
+import path from "path";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -182,7 +185,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+});
 ```
 
 - [ ] **Step 3: Add `@` path alias to tsconfig**
@@ -230,6 +233,7 @@ git commit -m "chore: add tailwind v4 and @ path alias"
 ## Task 3: Initialize shadcn/ui with Claude-like theme
 
 **Files:**
+
 - Create: `components.json` (via shadcn init)
 - Modify: `src/index.css` (theme tokens)
 - Create: `src/lib/utils.ts` (via shadcn)
@@ -248,13 +252,13 @@ Open `src/index.css`. In the `:root` block that shadcn generated, override these
 
 ```css
 :root {
-  --background: oklch(0.97 0.01 85);        /* warm cream */
-  --foreground: oklch(0.24 0.01 70);        /* near-black warm gray */
+  --background: oklch(0.97 0.01 85); /* warm cream */
+  --foreground: oklch(0.24 0.01 70); /* near-black warm gray */
   --card: oklch(0.98 0.008 85);
   --card-foreground: oklch(0.24 0.01 70);
   --popover: oklch(0.98 0.008 85);
   --popover-foreground: oklch(0.24 0.01 70);
-  --primary: oklch(0.64 0.13 38);           /* terracotta-coral #D97757 */
+  --primary: oklch(0.64 0.13 38); /* terracotta-coral #D97757 */
   --primary-foreground: oklch(0.99 0.005 85);
   --secondary: oklch(0.94 0.012 85);
   --secondary-foreground: oklch(0.24 0.01 70);
@@ -281,17 +285,17 @@ npx shadcn@latest add button card dialog drawer tabs toggle-group tooltip input 
 Replace `src/App.tsx` with a minimal check:
 
 ```tsx
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 function App() {
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
       <Button>Doc Signer</Button>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
 ```
 
 - [ ] **Step 5: Verify build and visual**
@@ -311,6 +315,7 @@ git commit -m "feat: init shadcn with Claude-like theme"
 ## Task 4: Install domain libraries and configure Vitest
 
 **Files:**
+
 - Modify: `package.json` (scripts)
 - Create: `vitest.config.ts`
 - Create: `src/test/setup.ts`
@@ -325,8 +330,8 @@ npm install -D vitest @vitest/ui jsdom @testing-library/react @testing-library/j
 - [ ] **Step 2: Create vitest.config.ts**
 
 ```ts
-import path from "path"
-import { defineConfig } from "vitest/config"
+import path from "path";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   resolve: {
@@ -337,13 +342,13 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
   },
-})
+});
 ```
 
 - [ ] **Step 3: Create src/test/setup.ts**
 
 ```ts
-import "@testing-library/jest-dom"
+import "@testing-library/jest-dom";
 ```
 
 - [ ] **Step 4: Add test scripts to package.json**
@@ -360,13 +365,13 @@ In `package.json` `"scripts"`, add:
 Create `src/test/sanity.test.ts`:
 
 ```ts
-import { describe, it, expect } from "vitest"
+import { describe, it, expect } from "vitest";
 
 describe("sanity", () => {
   it("runs", () => {
-    expect(1 + 1).toBe(2)
-  })
-})
+    expect(1 + 1).toBe(2);
+  });
+});
 ```
 
 - [ ] **Step 6: Run tests**
@@ -386,6 +391,7 @@ git commit -m "chore: add pdf/signature libs and vitest"
 ## Task 5: PDF coordinate conversion module (TDD)
 
 **Files:**
+
 - Create: `src/lib/pdf/coordinates.ts`
 - Test: `src/lib/pdf/coordinates.test.ts`
 
@@ -394,42 +400,38 @@ Context: A rendered page has a `scale` (pdf.js viewport scale). Screen space ori
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-import { describe, it, expect } from "vitest"
-import {
-  screenRectToPdfRect,
-  type PageGeometry,
-  type ScreenRect,
-} from "@/lib/pdf/coordinates"
+import { describe, it, expect } from "vitest";
+import { screenRectToPdfRect, type PageGeometry, type ScreenRect } from "@/lib/pdf/coordinates";
 
 const geom: PageGeometry = {
   pdfWidth: 600,
   pdfHeight: 800,
   scale: 2, // rendered canvas is 1200 x 1600 screen px
-}
+};
 
 describe("screenRectToPdfRect", () => {
   it("converts a top-left screen rect to bottom-left PDF coords", () => {
     // 100x50 screen px box at screen (200, 100)
-    const rect: ScreenRect = { x: 200, y: 100, width: 100, height: 50 }
-    const pdf = screenRectToPdfRect(rect, geom)
+    const rect: ScreenRect = { x: 200, y: 100, width: 100, height: 50 };
+    const pdf = screenRectToPdfRect(rect, geom);
     // x: 200 / scale = 100
-    expect(pdf.x).toBeCloseTo(100, 5)
+    expect(pdf.x).toBeCloseTo(100, 5);
     // width: 100 / 2 = 50, height: 50 / 2 = 25
-    expect(pdf.width).toBeCloseTo(50, 5)
-    expect(pdf.height).toBeCloseTo(25, 5)
+    expect(pdf.width).toBeCloseTo(50, 5);
+    expect(pdf.height).toBeCloseTo(25, 5);
     // y (bottom-left): pdfHeight - (screenY + screenHeight)/scale
     //   = 800 - (100 + 50)/2 = 800 - 75 = 725
-    expect(pdf.y).toBeCloseTo(725, 5)
-  })
+    expect(pdf.y).toBeCloseTo(725, 5);
+  });
 
   it("places a box at the very top-left of the page near the page top", () => {
-    const rect: ScreenRect = { x: 0, y: 0, width: 20, height: 20 }
-    const pdf = screenRectToPdfRect(rect, geom)
-    expect(pdf.x).toBeCloseTo(0, 5)
+    const rect: ScreenRect = { x: 0, y: 0, width: 20, height: 20 };
+    const pdf = screenRectToPdfRect(rect, geom);
+    expect(pdf.x).toBeCloseTo(0, 5);
     // y = 800 - (0 + 20)/2 = 790
-    expect(pdf.y).toBeCloseTo(790, 5)
-  })
-})
+    expect(pdf.y).toBeCloseTo(790, 5);
+  });
+});
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -442,37 +444,37 @@ Expected: FAIL — module/function not found.
 ```ts
 export interface PageGeometry {
   /** Unscaled page width in PDF points. */
-  pdfWidth: number
+  pdfWidth: number;
   /** Unscaled page height in PDF points. */
-  pdfHeight: number
+  pdfHeight: number;
   /** pdf.js viewport scale used to render the page to canvas. */
-  scale: number
+  scale: number;
 }
 
 /** A rectangle in rendered screen pixels, relative to the page's top-left. */
 export interface ScreenRect {
-  x: number
-  y: number
-  width: number
-  height: number
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 /** A rectangle in PDF points, origin bottom-left (pdf-lib convention). */
 export interface PdfRect {
-  x: number
-  y: number
-  width: number
-  height: number
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 export function screenRectToPdfRect(rect: ScreenRect, geom: PageGeometry): PdfRect {
-  const { scale, pdfHeight } = geom
-  const width = rect.width / scale
-  const height = rect.height / scale
-  const x = rect.x / scale
+  const { scale, pdfHeight } = geom;
+  const width = rect.width / scale;
+  const height = rect.height / scale;
+  const x = rect.x / scale;
   // Flip the y-axis: screen top-left -> PDF bottom-left.
-  const y = pdfHeight - (rect.y + rect.height) / scale
-  return { x, y, width, height }
+  const y = pdfHeight - (rect.y + rect.height) / scale;
+  return { x, y, width, height };
 }
 ```
 
@@ -486,13 +488,13 @@ Expected: PASS (2 tests).
 Append to `coordinates.test.ts`:
 
 ```ts
-import { screenLengthToPdf } from "@/lib/pdf/coordinates"
+import { screenLengthToPdf } from "@/lib/pdf/coordinates";
 
 describe("screenLengthToPdf", () => {
   it("scales a pixel length down to PDF points", () => {
-    expect(screenLengthToPdf(32, geom)).toBeCloseTo(16, 5)
-  })
-})
+    expect(screenLengthToPdf(32, geom)).toBeCloseTo(16, 5);
+  });
+});
 ```
 
 - [ ] **Step 6: Run to verify it fails, then implement**
@@ -504,7 +506,7 @@ Add to `coordinates.ts`:
 ```ts
 /** Convert a screen-pixel length (e.g. font size) to PDF points. */
 export function screenLengthToPdf(lengthPx: number, geom: PageGeometry): number {
-  return lengthPx / geom.scale
+  return lengthPx / geom.scale;
 }
 ```
 
@@ -522,6 +524,7 @@ git commit -m "feat: add pdf coordinate conversion module"
 ## Task 6: Annotation state types and store (TDD)
 
 **Files:**
+
 - Create: `src/state/annotations.ts`
 - Test: `src/state/annotations.test.ts`
 
@@ -530,12 +533,8 @@ Context: A plain reducer-style store of annotations kept in screen space. Built 
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-import { describe, it, expect } from "vitest"
-import {
-  annotationsReducer,
-  initialAnnotationsState,
-  type Annotation,
-} from "@/state/annotations"
+import { describe, it, expect } from "vitest";
+import { annotationsReducer, initialAnnotationsState, type Annotation } from "@/state/annotations";
 
 const sig: Annotation = {
   id: "a1",
@@ -543,37 +542,37 @@ const sig: Annotation = {
   pageIndex: 0,
   rect: { x: 10, y: 10, width: 100, height: 40 },
   payload: { dataUrl: "data:image/png;base64,XXX" },
-}
+};
 
 describe("annotationsReducer", () => {
   it("adds an annotation", () => {
-    const s = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig })
-    expect(s.items).toHaveLength(1)
-    expect(s.items[0].id).toBe("a1")
-  })
+    const s = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig });
+    expect(s.items).toHaveLength(1);
+    expect(s.items[0].id).toBe("a1");
+  });
 
   it("updates an annotation's rect (move/resize)", () => {
-    const added = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig })
+    const added = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig });
     const moved = annotationsReducer(added, {
       type: "update",
       id: "a1",
       patch: { rect: { x: 50, y: 60, width: 120, height: 50 } },
-    })
-    expect(moved.items[0].rect).toEqual({ x: 50, y: 60, width: 120, height: 50 })
-  })
+    });
+    expect(moved.items[0].rect).toEqual({ x: 50, y: 60, width: 120, height: 50 });
+  });
 
   it("removes an annotation", () => {
-    const added = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig })
-    const removed = annotationsReducer(added, { type: "remove", id: "a1" })
-    expect(removed.items).toHaveLength(0)
-  })
+    const added = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig });
+    const removed = annotationsReducer(added, { type: "remove", id: "a1" });
+    expect(removed.items).toHaveLength(0);
+  });
 
   it("clears all annotations", () => {
-    const added = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig })
-    const cleared = annotationsReducer(added, { type: "clear" })
-    expect(cleared.items).toHaveLength(0)
-  })
-})
+    const added = annotationsReducer(initialAnnotationsState, { type: "add", annotation: sig });
+    const cleared = annotationsReducer(added, { type: "clear" });
+    expect(cleared.items).toHaveLength(0);
+  });
+});
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -584,27 +583,37 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Write minimal implementation**
 
 ```ts
-import { useReducer } from "react"
-import type { ScreenRect } from "@/lib/pdf/coordinates"
+import { useReducer } from "react";
+import type { ScreenRect } from "@/lib/pdf/coordinates";
 
-export type SignaturePayload = { dataUrl: string }
-export type TextPayload = { text: string; fontSizePx: number; color: string }
+export type SignaturePayload = { dataUrl: string };
+export type TextPayload = { text: string; fontSizePx: number; color: string };
 
 export type Annotation =
-  | { id: string; type: "signature"; pageIndex: number; rect: ScreenRect; payload: SignaturePayload }
-  | { id: string; type: "text"; pageIndex: number; rect: ScreenRect; payload: TextPayload }
+  | {
+      id: string;
+      type: "signature";
+      pageIndex: number;
+      rect: ScreenRect;
+      payload: SignaturePayload;
+    }
+  | { id: string; type: "text"; pageIndex: number; rect: ScreenRect; payload: TextPayload };
 
 export interface AnnotationsState {
-  items: Annotation[]
+  items: Annotation[];
 }
 
-export const initialAnnotationsState: AnnotationsState = { items: [] }
+export const initialAnnotationsState: AnnotationsState = { items: [] };
 
 export type AnnotationAction =
   | { type: "add"; annotation: Annotation }
-  | { type: "update"; id: string; patch: Partial<Pick<Annotation, "rect">> & { payload?: Annotation["payload"] } }
+  | {
+      type: "update";
+      id: string;
+      patch: Partial<Pick<Annotation, "rect">> & { payload?: Annotation["payload"] };
+    }
   | { type: "remove"; id: string }
-  | { type: "clear" }
+  | { type: "clear" };
 
 export function annotationsReducer(
   state: AnnotationsState,
@@ -612,7 +621,7 @@ export function annotationsReducer(
 ): AnnotationsState {
   switch (action.type) {
     case "add":
-      return { items: [...state.items, action.annotation] }
+      return { items: [...state.items, action.annotation] };
     case "update":
       return {
         items: state.items.map((a) =>
@@ -620,19 +629,19 @@ export function annotationsReducer(
             ? ({ ...a, ...action.patch, payload: action.patch.payload ?? a.payload } as Annotation)
             : a,
         ),
-      }
+      };
     case "remove":
-      return { items: state.items.filter((a) => a.id !== action.id) }
+      return { items: state.items.filter((a) => a.id !== action.id) };
     case "clear":
-      return initialAnnotationsState
+      return initialAnnotationsState;
     default:
-      return state
+      return state;
   }
 }
 
 export function useAnnotations() {
-  const [state, dispatch] = useReducer(annotationsReducer, initialAnnotationsState)
-  return { items: state.items, dispatch }
+  const [state, dispatch] = useReducer(annotationsReducer, initialAnnotationsState);
+  return { items: state.items, dispatch };
 }
 ```
 
@@ -653,41 +662,42 @@ git commit -m "feat: add annotations reducer/store"
 ## Task 7: Saved-signature localStorage module (TDD)
 
 **Files:**
+
 - Create: `src/lib/signature/storage.ts`
 - Test: `src/lib/signature/storage.test.ts`
 
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-import { describe, it, expect, beforeEach } from "vitest"
-import { listSignatures, saveSignature, deleteSignature } from "@/lib/signature/storage"
+import { describe, it, expect, beforeEach } from "vitest";
+import { listSignatures, saveSignature, deleteSignature } from "@/lib/signature/storage";
 
 describe("signature storage", () => {
-  beforeEach(() => localStorage.clear())
+  beforeEach(() => localStorage.clear());
 
   it("starts empty", () => {
-    expect(listSignatures()).toEqual([])
-  })
+    expect(listSignatures()).toEqual([]);
+  });
 
   it("saves and lists a signature", () => {
-    const item = saveSignature("data:image/png;base64,AAA")
-    const all = listSignatures()
-    expect(all).toHaveLength(1)
-    expect(all[0].id).toBe(item.id)
-    expect(all[0].dataUrl).toBe("data:image/png;base64,AAA")
-  })
+    const item = saveSignature("data:image/png;base64,AAA");
+    const all = listSignatures();
+    expect(all).toHaveLength(1);
+    expect(all[0].id).toBe(item.id);
+    expect(all[0].dataUrl).toBe("data:image/png;base64,AAA");
+  });
 
   it("deletes a signature", () => {
-    const item = saveSignature("data:image/png;base64,BBB")
-    deleteSignature(item.id)
-    expect(listSignatures()).toEqual([])
-  })
+    const item = saveSignature("data:image/png;base64,BBB");
+    deleteSignature(item.id);
+    expect(listSignatures()).toEqual([]);
+  });
 
   it("returns [] gracefully when stored value is corrupt", () => {
-    localStorage.setItem("doc-signer:signatures", "not json")
-    expect(listSignatures()).toEqual([])
-  })
-})
+    localStorage.setItem("doc-signer:signatures", "not json");
+    expect(listSignatures()).toEqual([]);
+  });
+});
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -698,36 +708,36 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Write minimal implementation**
 
 ```ts
-const KEY = "doc-signer:signatures"
+const KEY = "doc-signer:signatures";
 
 export interface SavedSignature {
-  id: string
-  dataUrl: string
-  createdAt: number
+  id: string;
+  dataUrl: string;
+  createdAt: number;
 }
 
 function read(): SavedSignature[] {
   try {
-    const raw = localStorage.getItem(KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed : []
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return []
+    return [];
   }
 }
 
 function write(items: SavedSignature[]): boolean {
   try {
-    localStorage.setItem(KEY, JSON.stringify(items))
-    return true
+    localStorage.setItem(KEY, JSON.stringify(items));
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
 export function listSignatures(): SavedSignature[] {
-  return read()
+  return read();
 }
 
 export function saveSignature(dataUrl: string): SavedSignature {
@@ -735,13 +745,13 @@ export function saveSignature(dataUrl: string): SavedSignature {
     id: `sig_${read().length}_${dataUrl.length}`,
     dataUrl,
     createdAt: 0,
-  }
-  write([...read(), item])
-  return item
+  };
+  write([...read(), item]);
+  return item;
 }
 
 export function deleteSignature(id: string): void {
-  write(read().filter((s) => s.id !== id))
+  write(read().filter((s) => s.id !== id));
 }
 ```
 
@@ -764,6 +774,7 @@ git commit -m "feat: add saved-signature localStorage module"
 ## Task 8: PDF loader module
 
 **Files:**
+
 - Create: `src/lib/pdf/loader.ts`
 
 Context: pdf.js needs its worker configured. With Vite, import the worker via the `?url` suffix and assign it to `GlobalWorkerOptions.workerSrc`. This module is hard to unit-test in jsdom (no canvas 2d), so it is verified through the Viewer integration and build.
@@ -771,51 +782,51 @@ Context: pdf.js needs its worker configured. With Vite, import the worker via th
 - [ ] **Step 1: Implement the loader**
 
 ```ts
-import * as pdfjsLib from "pdfjs-dist"
-import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url"
+import * as pdfjsLib from "pdfjs-dist";
+import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 export interface LoadedPdf {
-  numPages: number
+  numPages: number;
   /** Render a 1-based page to a canvas at the given scale. */
-  renderPage: (pageNumber: number, scale: number) => Promise<HTMLCanvasElement>
+  renderPage: (pageNumber: number, scale: number) => Promise<HTMLCanvasElement>;
   /** Unscaled page size in PDF points. */
-  getPageSize: (pageNumber: number) => Promise<{ width: number; height: number }>
+  getPageSize: (pageNumber: number) => Promise<{ width: number; height: number }>;
 }
 
 export async function loadPdf(bytes: ArrayBuffer | Uint8Array): Promise<LoadedPdf> {
-  const data = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
-  const doc = await pdfjsLib.getDocument({ data }).promise
+  const data = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  const doc = await pdfjsLib.getDocument({ data }).promise;
 
   return {
     numPages: doc.numPages,
     async getPageSize(pageNumber: number) {
-      const page = await doc.getPage(pageNumber)
-      const vp = page.getViewport({ scale: 1 })
-      return { width: vp.width, height: vp.height }
+      const page = await doc.getPage(pageNumber);
+      const vp = page.getViewport({ scale: 1 });
+      return { width: vp.width, height: vp.height };
     },
     async renderPage(pageNumber: number, scale: number) {
-      const page = await doc.getPage(pageNumber)
-      const viewport = page.getViewport({ scale })
-      const canvas = document.createElement("canvas")
-      canvas.width = Math.floor(viewport.width)
-      canvas.height = Math.floor(viewport.height)
-      const ctx = canvas.getContext("2d")
-      if (!ctx) throw new Error("Could not get 2d canvas context")
-      await page.render({ canvas, canvasContext: ctx, viewport }).promise
-      return canvas
+      const page = await doc.getPage(pageNumber);
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Could not get 2d canvas context");
+      await page.render({ canvas, canvasContext: ctx, viewport }).promise;
+      return canvas;
     },
-  }
+  };
 }
 
 /** Throws if the bytes are not a parseable PDF. */
 export async function isValidPdf(bytes: ArrayBuffer | Uint8Array): Promise<boolean> {
   try {
-    await loadPdf(bytes)
-    return true
+    await loadPdf(bytes);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 ```
@@ -837,6 +848,7 @@ git commit -m "feat: add pdf.js loader module"
 ## Task 9: PDF exporter module (TDD integration)
 
 **Files:**
+
 - Create: `src/lib/pdf/exporter.ts`
 - Test: `src/lib/pdf/exporter.test.ts`
 
@@ -845,24 +857,24 @@ Context: pdf-lib runs in jsdom. The test creates a blank PDF with pdf-lib, expor
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-import { describe, it, expect } from "vitest"
-import { PDFDocument, rgb } from "pdf-lib"
-import { exportPdf } from "@/lib/pdf/exporter"
-import type { Annotation } from "@/state/annotations"
+import { describe, it, expect } from "vitest";
+import { PDFDocument, rgb } from "pdf-lib";
+import { exportPdf } from "@/lib/pdf/exporter";
+import type { Annotation } from "@/state/annotations";
 
 // 1x1 transparent PNG
 const PNG =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
 
 async function blankPdfBytes(): Promise<Uint8Array> {
-  const doc = await PDFDocument.create()
-  doc.addPage([600, 800])
-  return doc.save()
+  const doc = await PDFDocument.create();
+  doc.addPage([600, 800]);
+  return doc.save();
 }
 
 describe("exportPdf", () => {
   it("bakes a signature image and text into the pdf and returns a valid pdf", async () => {
-    const original = await blankPdfBytes()
+    const original = await blankPdfBytes();
     const annotations: Annotation[] = [
       {
         id: "s1",
@@ -878,22 +890,24 @@ describe("exportPdf", () => {
         rect: { x: 50, y: 50, width: 150, height: 30 },
         payload: { text: "Signed", fontSizePx: 24, color: "#000000" },
       },
-    ]
+    ];
 
-    const out = await exportPdf(original, annotations, [{ pdfWidth: 600, pdfHeight: 800, scale: 1 }])
+    const out = await exportPdf(original, annotations, [
+      { pdfWidth: 600, pdfHeight: 800, scale: 1 },
+    ]);
 
     // Result is a valid PDF with the same page count.
-    const reloaded = await PDFDocument.load(out)
-    expect(reloaded.getPageCount()).toBe(1)
+    const reloaded = await PDFDocument.load(out);
+    expect(reloaded.getPageCount()).toBe(1);
     // Embedding an image + text should make the file larger than the blank original.
-    expect(out.byteLength).toBeGreaterThan(original.byteLength)
-  })
+    expect(out.byteLength).toBeGreaterThan(original.byteLength);
+  });
 
   it("uses rgb for color parsing without throwing", () => {
     // sanity that rgb import is wired (guards against tree-shake regressions)
-    expect(typeof rgb).toBe("function")
-  })
-})
+    expect(typeof rgb).toBe("function");
+  });
+});
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -904,24 +918,16 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Write minimal implementation**
 
 ```ts
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib"
-import type { Annotation } from "@/state/annotations"
-import {
-  screenRectToPdfRect,
-  screenLengthToPdf,
-  type PageGeometry,
-} from "@/lib/pdf/coordinates"
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import type { Annotation } from "@/state/annotations";
+import { screenRectToPdfRect, screenLengthToPdf, type PageGeometry } from "@/lib/pdf/coordinates";
 
 function hexToRgb(hex: string) {
-  const m = hex.replace("#", "")
-  const r = parseInt(m.substring(0, 2), 16) / 255
-  const g = parseInt(m.substring(2, 4), 16) / 255
-  const b = parseInt(m.substring(4, 6), 16) / 255
-  return rgb(
-    Number.isFinite(r) ? r : 0,
-    Number.isFinite(g) ? g : 0,
-    Number.isFinite(b) ? b : 0,
-  )
+  const m = hex.replace("#", "");
+  const r = parseInt(m.substring(0, 2), 16) / 255;
+  const g = parseInt(m.substring(2, 4), 16) / 255;
+  const b = parseInt(m.substring(4, 6), 16) / 255;
+  return rgb(Number.isFinite(r) ? r : 0, Number.isFinite(g) ? g : 0, Number.isFinite(b) ? b : 0);
 }
 
 /**
@@ -933,21 +939,21 @@ export async function exportPdf(
   annotations: Annotation[],
   geometries: PageGeometry[],
 ): Promise<Uint8Array> {
-  const doc = await PDFDocument.load(originalBytes)
-  const pages = doc.getPages()
-  const font = await doc.embedFont(StandardFonts.Helvetica)
+  const doc = await PDFDocument.load(originalBytes);
+  const pages = doc.getPages();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
 
   for (const ann of annotations) {
-    const page = pages[ann.pageIndex]
-    const geom = geometries[ann.pageIndex]
-    if (!page || !geom) continue
-    const r = screenRectToPdfRect(ann.rect, geom)
+    const page = pages[ann.pageIndex];
+    const geom = geometries[ann.pageIndex];
+    if (!page || !geom) continue;
+    const r = screenRectToPdfRect(ann.rect, geom);
 
     if (ann.type === "signature") {
-      const png = await doc.embedPng(ann.payload.dataUrl)
-      page.drawImage(png, { x: r.x, y: r.y, width: r.width, height: r.height })
+      const png = await doc.embedPng(ann.payload.dataUrl);
+      page.drawImage(png, { x: r.x, y: r.y, width: r.width, height: r.height });
     } else {
-      const size = screenLengthToPdf(ann.payload.fontSizePx, geom)
+      const size = screenLengthToPdf(ann.payload.fontSizePx, geom);
       // pdf-lib text y is the baseline; nudge up from the rect bottom.
       page.drawText(ann.payload.text, {
         x: r.x,
@@ -955,11 +961,11 @@ export async function exportPdf(
         size,
         font,
         color: hexToRgb(ann.payload.color),
-      })
+      });
     }
   }
 
-  return doc.save()
+  return doc.save();
 }
 ```
 
@@ -980,31 +986,32 @@ git commit -m "feat: add pdf-lib exporter module"
 ## Task 10: Output helpers (download / share / print)
 
 **Files:**
+
 - Create: `src/lib/share/output.ts`
 - Test: `src/lib/share/output.test.ts`
 
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-import { describe, it, expect, vi, beforeEach } from "vitest"
-import { canShareFiles, makePdfFile } from "@/lib/share/output"
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { canShareFiles, makePdfFile } from "@/lib/share/output";
 
 describe("output helpers", () => {
   beforeEach(() => {
-    vi.restoreAllMocks()
-  })
+    vi.restoreAllMocks();
+  });
 
   it("makePdfFile wraps bytes in a File with the right type and name", () => {
-    const file = makePdfFile(new Uint8Array([1, 2, 3]), "signed.pdf")
-    expect(file.name).toBe("signed.pdf")
-    expect(file.type).toBe("application/pdf")
-  })
+    const file = makePdfFile(new Uint8Array([1, 2, 3]), "signed.pdf");
+    expect(file.name).toBe("signed.pdf");
+    expect(file.type).toBe("application/pdf");
+  });
 
   it("canShareFiles is false when navigator.canShare is absent", () => {
     // jsdom has no navigator.canShare by default
-    expect(canShareFiles(makePdfFile(new Uint8Array([1]), "x.pdf"))).toBe(false)
-  })
-})
+    expect(canShareFiles(makePdfFile(new Uint8Array([1]), "x.pdf"))).toBe(false);
+  });
+});
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -1016,52 +1023,52 @@ Expected: FAIL — module not found.
 
 ```ts
 export function makePdfFile(bytes: Uint8Array, filename: string): File {
-  const blob = new Blob([bytes], { type: "application/pdf" })
-  return new File([blob], filename, { type: "application/pdf" })
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  return new File([blob], filename, { type: "application/pdf" });
 }
 
 export function download(bytes: Uint8Array, filename: string): void {
-  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-  const a = document.createElement("a")
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  URL.revokeObjectURL(url)
+  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 export function canShareFiles(file: File): boolean {
-  const nav = navigator as Navigator & { canShare?: (data?: ShareData) => boolean }
-  return typeof nav.canShare === "function" && nav.canShare({ files: [file] })
+  const nav = navigator as Navigator & { canShare?: (data?: ShareData) => boolean };
+  return typeof nav.canShare === "function" && nav.canShare({ files: [file] });
 }
 
 export async function shareToWhatsApp(bytes: Uint8Array, filename: string): Promise<boolean> {
-  const file = makePdfFile(bytes, filename)
-  if (!canShareFiles(file)) return false
+  const file = makePdfFile(bytes, filename);
+  if (!canShareFiles(file)) return false;
   try {
-    await navigator.share({ files: [file], title: filename })
-    return true
+    await navigator.share({ files: [file], title: filename });
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
 export function printPdf(bytes: Uint8Array): void {
-  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
-  const iframe = document.createElement("iframe")
-  iframe.style.position = "fixed"
-  iframe.style.right = "0"
-  iframe.style.bottom = "0"
-  iframe.style.width = "0"
-  iframe.style.height = "0"
-  iframe.style.border = "0"
-  iframe.src = url
+  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "fixed";
+  iframe.style.right = "0";
+  iframe.style.bottom = "0";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "0";
+  iframe.src = url;
   iframe.onload = () => {
-    iframe.contentWindow?.focus()
-    iframe.contentWindow?.print()
-  }
-  document.body.appendChild(iframe)
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+  };
+  document.body.appendChild(iframe);
 }
 ```
 
@@ -1082,6 +1089,7 @@ git commit -m "feat: add download/share/print output helpers"
 ## Task 11: SignaturePad component (draw / saved / upload)
 
 **Files:**
+
 - Create: `src/components/SignatureDialog.tsx`
 
 Context: A shadcn `Dialog` with `Tabs`: Draw (signature_pad on a canvas), Saved (thumbnails from storage), Upload (file input -> data URL). Confirm returns a PNG data URL via `onConfirm`.
@@ -1089,60 +1097,56 @@ Context: A shadcn `Dialog` with `Tabs`: Draw (signature_pad on a canvas), Saved 
 - [ ] **Step 1: Implement the component**
 
 ```tsx
-import { useEffect, useRef, useState } from "react"
-import SignaturePad from "signature_pad"
+import { useEffect, useRef, useState } from "react";
+import SignaturePad from "signature_pad";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import {
-  listSignatures,
-  saveSignature,
-  type SavedSignature,
-} from "@/lib/signature/storage"
+} from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { listSignatures, saveSignature, type SavedSignature } from "@/lib/signature/storage";
 
 interface Props {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onConfirm: (dataUrl: string) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (dataUrl: string) => void;
 }
 
 export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const padRef = useRef<SignaturePad | null>(null)
-  const [saved, setSaved] = useState<SavedSignature[]>([])
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const padRef = useRef<SignaturePad | null>(null);
+  const [saved, setSaved] = useState<SavedSignature[]>([]);
 
   useEffect(() => {
-    if (!open || !canvasRef.current) return
-    const pad = new SignaturePad(canvasRef.current, { penColor: "#1a1a1a" })
-    padRef.current = pad
-    setSaved(listSignatures())
-    return () => pad.off()
-  }, [open])
+    if (!open || !canvasRef.current) return;
+    const pad = new SignaturePad(canvasRef.current, { penColor: "#1a1a1a" });
+    padRef.current = pad;
+    setSaved(listSignatures());
+    return () => pad.off();
+  }, [open]);
 
   function confirmDrawn(persist: boolean) {
-    const pad = padRef.current
-    if (!pad || pad.isEmpty()) return
-    const dataUrl = pad.toDataURL("image/png")
-    if (persist) saveSignature(dataUrl)
-    onConfirm(dataUrl)
-    onOpenChange(false)
+    const pad = padRef.current;
+    if (!pad || pad.isEmpty()) return;
+    const dataUrl = pad.toDataURL("image/png");
+    if (persist) saveSignature(dataUrl);
+    onConfirm(dataUrl);
+    onOpenChange(false);
   }
 
   function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
     reader.onload = () => {
-      onConfirm(reader.result as string)
-      onOpenChange(false)
-    }
-    reader.readAsDataURL(file)
+      onConfirm(reader.result as string);
+      onOpenChange(false);
+    };
+    reader.readAsDataURL(file);
   }
 
   return (
@@ -1179,17 +1183,15 @@ export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
           <TabsContent value="saved">
             <div className="grid grid-cols-2 gap-2">
               {saved.length === 0 && (
-                <p className="text-muted-foreground text-sm col-span-2">
-                  No saved signatures yet.
-                </p>
+                <p className="text-muted-foreground text-sm col-span-2">No saved signatures yet.</p>
               )}
               {saved.map((s) => (
                 <button
                   key={s.id}
                   className="rounded-md border border-border bg-card p-2"
                   onClick={() => {
-                    onConfirm(s.dataUrl)
-                    onOpenChange(false)
+                    onConfirm(s.dataUrl);
+                    onOpenChange(false);
                   }}
                 >
                   <img src={s.dataUrl} alt="saved signature" className="max-h-20 mx-auto" />
@@ -1205,7 +1207,7 @@ export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
         <DialogFooter />
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 ```
 
@@ -1226,6 +1228,7 @@ git commit -m "feat: add signature dialog (draw/saved/upload)"
 ## Task 12: PlacedAnnotation overlay (drag + resize)
 
 **Files:**
+
 - Create: `src/components/PlacedAnnotation.tsx`
 
 Context: An absolutely-positioned element over a page. Pointer events drag the box; a corner handle resizes it. Reports rect changes to the parent. Touch-friendly via Pointer Events.
@@ -1233,48 +1236,48 @@ Context: An absolutely-positioned element over a page. Pointer events drag the b
 - [ ] **Step 1: Implement the component**
 
 ```tsx
-import { useRef } from "react"
-import type { Annotation } from "@/state/annotations"
-import type { ScreenRect } from "@/lib/pdf/coordinates"
-import { X } from "lucide-react"
+import { useRef } from "react";
+import type { Annotation } from "@/state/annotations";
+import type { ScreenRect } from "@/lib/pdf/coordinates";
+import { X } from "lucide-react";
 
 interface Props {
-  annotation: Annotation
-  onChange: (rect: ScreenRect) => void
-  onRemove: () => void
+  annotation: Annotation;
+  onChange: (rect: ScreenRect) => void;
+  onRemove: () => void;
 }
 
 export function PlacedAnnotation({ annotation, onChange, onRemove }: Props) {
-  const start = useRef<{ px: number; py: number; rect: ScreenRect } | null>(null)
-  const mode = useRef<"move" | "resize" | null>(null)
-  const { rect } = annotation
+  const start = useRef<{ px: number; py: number; rect: ScreenRect } | null>(null);
+  const mode = useRef<"move" | "resize" | null>(null);
+  const { rect } = annotation;
 
   function onPointerDown(e: React.PointerEvent, m: "move" | "resize") {
-    e.stopPropagation()
-    ;(e.target as Element).setPointerCapture(e.pointerId)
-    start.current = { px: e.clientX, py: e.clientY, rect: { ...rect } }
-    mode.current = m
+    e.stopPropagation();
+    (e.target as Element).setPointerCapture(e.pointerId);
+    start.current = { px: e.clientX, py: e.clientY, rect: { ...rect } };
+    mode.current = m;
   }
 
   function onPointerMove(e: React.PointerEvent) {
-    if (!start.current || !mode.current) return
-    const dx = e.clientX - start.current.px
-    const dy = e.clientY - start.current.py
-    const s = start.current.rect
+    if (!start.current || !mode.current) return;
+    const dx = e.clientX - start.current.px;
+    const dy = e.clientY - start.current.py;
+    const s = start.current.rect;
     if (mode.current === "move") {
-      onChange({ ...s, x: s.x + dx, y: s.y + dy })
+      onChange({ ...s, x: s.x + dx, y: s.y + dy });
     } else {
       onChange({
         ...s,
         width: Math.max(24, s.width + dx),
         height: Math.max(16, s.height + dy),
-      })
+      });
     }
   }
 
   function onPointerUp() {
-    start.current = null
-    mode.current = null
+    start.current = null;
+    mode.current = null;
   }
 
   return (
@@ -1316,7 +1319,7 @@ export function PlacedAnnotation({ annotation, onChange, onRemove }: Props) {
         onPointerUp={onPointerUp}
       />
     </div>
-  )
+  );
 }
 ```
 
@@ -1337,6 +1340,7 @@ git commit -m "feat: add draggable/resizable placed annotation overlay"
 ## Task 13: PdfPage and Viewer
 
 **Files:**
+
 - Create: `src/components/PdfPage.tsx`
 - Create: `src/components/Viewer.tsx`
 
@@ -1345,21 +1349,21 @@ Context: `PdfPage` renders one page to a canvas at a chosen scale, exposes geome
 - [ ] **Step 1: Implement PdfPage**
 
 ```tsx
-import { useEffect, useRef, useState } from "react"
-import type { LoadedPdf } from "@/lib/pdf/loader"
-import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates"
-import type { Annotation } from "@/state/annotations"
-import { PlacedAnnotation } from "@/components/PlacedAnnotation"
+import { useEffect, useRef, useState } from "react";
+import type { LoadedPdf } from "@/lib/pdf/loader";
+import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates";
+import type { Annotation } from "@/state/annotations";
+import { PlacedAnnotation } from "@/components/PlacedAnnotation";
 
 interface Props {
-  pdf: LoadedPdf
-  pageNumber: number // 1-based
-  scale: number
-  annotations: Annotation[]
-  onGeometry: (pageIndex: number, geom: PageGeometry) => void
-  onPlace: (pageIndex: number, at: { x: number; y: number }) => void
-  onChangeRect: (id: string, rect: ScreenRect) => void
-  onRemove: (id: string) => void
+  pdf: LoadedPdf;
+  pageNumber: number; // 1-based
+  scale: number;
+  annotations: Annotation[];
+  onGeometry: (pageIndex: number, geom: PageGeometry) => void;
+  onPlace: (pageIndex: number, at: { x: number; y: number }) => void;
+  onChangeRect: (id: string, rect: ScreenRect) => void;
+  onRemove: (id: string) => void;
 }
 
 export function PdfPage({
@@ -1372,32 +1376,32 @@ export function PdfPage({
   onChangeRect,
   onRemove,
 }: Props) {
-  const hostRef = useRef<HTMLDivElement>(null)
-  const [size, setSize] = useState({ w: 0, h: 0 })
-  const pageIndex = pageNumber - 1
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  const pageIndex = pageNumber - 1;
 
   useEffect(() => {
-    let cancelled = false
-    ;(async () => {
-      const canvas = await pdf.renderPage(pageNumber, scale)
-      if (cancelled || !hostRef.current) return
-      hostRef.current.querySelector("canvas")?.remove()
-      hostRef.current.prepend(canvas)
-      setSize({ w: canvas.width, h: canvas.height })
-      const { width, height } = await pdf.getPageSize(pageNumber)
-      onGeometry(pageIndex, { pdfWidth: width, pdfHeight: height, scale })
-    })()
+    let cancelled = false;
+    (async () => {
+      const canvas = await pdf.renderPage(pageNumber, scale);
+      if (cancelled || !hostRef.current) return;
+      hostRef.current.querySelector("canvas")?.remove();
+      hostRef.current.prepend(canvas);
+      setSize({ w: canvas.width, h: canvas.height });
+      const { width, height } = await pdf.getPageSize(pageNumber);
+      onGeometry(pageIndex, { pdfWidth: width, pdfHeight: height, scale });
+    })();
     return () => {
-      cancelled = true
-    }
-  }, [pdf, pageNumber, scale, pageIndex, onGeometry])
+      cancelled = true;
+    };
+  }, [pdf, pageNumber, scale, pageIndex, onGeometry]);
 
   function handleClick(e: React.MouseEvent) {
-    if (e.target !== e.currentTarget && (e.target as Element).tagName !== "CANVAS") return
-    const host = hostRef.current
-    if (!host) return
-    const r = host.getBoundingClientRect()
-    onPlace(pageIndex, { x: e.clientX - r.left, y: e.clientY - r.top })
+    if (e.target !== e.currentTarget && (e.target as Element).tagName !== "CANVAS") return;
+    const host = hostRef.current;
+    if (!host) return;
+    const r = host.getBoundingClientRect();
+    onPlace(pageIndex, { x: e.clientX - r.left, y: e.clientY - r.top });
   }
 
   return (
@@ -1416,30 +1420,30 @@ export function PdfPage({
         />
       ))}
     </div>
-  )
+  );
 }
 ```
 
 - [ ] **Step 2: Implement Viewer**
 
 ```tsx
-import type { LoadedPdf } from "@/lib/pdf/loader"
-import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates"
-import type { Annotation } from "@/state/annotations"
-import { PdfPage } from "@/components/PdfPage"
+import type { LoadedPdf } from "@/lib/pdf/loader";
+import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates";
+import type { Annotation } from "@/state/annotations";
+import { PdfPage } from "@/components/PdfPage";
 
 interface Props {
-  pdf: LoadedPdf
-  scale: number
-  annotations: Annotation[]
-  onGeometry: (pageIndex: number, geom: PageGeometry) => void
-  onPlace: (pageIndex: number, at: { x: number; y: number }) => void
-  onChangeRect: (id: string, rect: ScreenRect) => void
-  onRemove: (id: string) => void
+  pdf: LoadedPdf;
+  scale: number;
+  annotations: Annotation[];
+  onGeometry: (pageIndex: number, geom: PageGeometry) => void;
+  onPlace: (pageIndex: number, at: { x: number; y: number }) => void;
+  onChangeRect: (id: string, rect: ScreenRect) => void;
+  onRemove: (id: string) => void;
 }
 
 export function Viewer({ pdf, scale, annotations, ...handlers }: Props) {
-  const pages = Array.from({ length: pdf.numPages }, (_, i) => i + 1)
+  const pages = Array.from({ length: pdf.numPages }, (_, i) => i + 1);
   return (
     <div className="w-full overflow-auto pb-32">
       {pages.map((p) => (
@@ -1453,7 +1457,7 @@ export function Viewer({ pdf, scale, annotations, ...handlers }: Props) {
         />
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -1474,6 +1478,7 @@ git commit -m "feat: add PdfPage and Viewer with annotation layer"
 ## Task 14: LandingScreen, Toolbar, OutputActions
 
 **Files:**
+
 - Create: `src/components/LandingScreen.tsx`
 - Create: `src/components/Toolbar.tsx`
 - Create: `src/components/OutputActions.tsx`
@@ -1481,22 +1486,22 @@ git commit -m "feat: add PdfPage and Viewer with annotation layer"
 - [ ] **Step 1: Implement LandingScreen**
 
 ```tsx
-import { useRef } from "react"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useRef } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface Props {
-  onFile: (bytes: ArrayBuffer, name: string) => void
-  error?: string
+  onFile: (bytes: ArrayBuffer, name: string) => void;
+  error?: string;
 }
 
 export function LandingScreen({ onFile, error }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function pick(file: File | undefined) {
-    if (!file) return
-    const buf = await file.arrayBuffer()
-    onFile(buf, file.name)
+    if (!file) return;
+    const buf = await file.arrayBuffer();
+    onFile(buf, file.name);
   }
 
   return (
@@ -1504,8 +1509,8 @@ export function LandingScreen({ onFile, error }: Props) {
       className="min-h-screen bg-background text-foreground flex items-center justify-center p-6"
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
-        e.preventDefault()
-        void pick(e.dataTransfer.files?.[0])
+        e.preventDefault();
+        void pick(e.dataTransfer.files?.[0]);
       }}
     >
       <Card className="max-w-md w-full p-8 text-center flex flex-col gap-4 items-center">
@@ -1525,21 +1530,21 @@ export function LandingScreen({ onFile, error }: Props) {
         <p className="text-xs text-muted-foreground">or drag &amp; drop a PDF here</p>
       </Card>
     </div>
-  )
+  );
 }
 ```
 
 - [ ] **Step 2: Implement Toolbar**
 
 ```tsx
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Pencil, Type, Image } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Pencil, Type, Image } from "lucide-react";
 
-export type Tool = "signature" | "text" | "saved" | null
+export type Tool = "signature" | "text" | "saved" | null;
 
 interface Props {
-  tool: Tool
-  onTool: (t: Tool) => void
+  tool: Tool;
+  onTool: (t: Tool) => void;
 }
 
 export function Toolbar({ tool, onTool }: Props) {
@@ -1563,22 +1568,22 @@ export function Toolbar({ tool, onTool }: Props) {
         </ToggleGroup>
       </div>
     </div>
-  )
+  );
 }
 ```
 
 - [ ] **Step 3: Implement OutputActions**
 
 ```tsx
-import { Button } from "@/components/ui/button"
-import { Download, Share2, Printer } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Download, Share2, Printer } from "lucide-react";
 
 interface Props {
-  onDownload: () => void
-  onShare: () => void
-  onPrint: () => void
-  canShare: boolean
-  busy: boolean
+  onDownload: () => void;
+  onShare: () => void;
+  onPrint: () => void;
+  canShare: boolean;
+  busy: boolean;
 }
 
 export function OutputActions({ onDownload, onShare, onPrint, canShare, busy }: Props) {
@@ -1596,7 +1601,7 @@ export function OutputActions({ onDownload, onShare, onPrint, canShare, busy }: 
         <Download size={16} /> Download
       </Button>
     </div>
-  )
+  );
 }
 ```
 
@@ -1617,6 +1622,7 @@ git commit -m "feat: add landing, toolbar, and output action components"
 ## Task 15: App wiring (state machine + place/export flow)
 
 **Files:**
+
 - Modify: `src/App.tsx`
 - Modify: `src/main.tsx` (add `<Toaster />`)
 
@@ -1627,7 +1633,7 @@ Context: App holds the loaded PDF, the annotation store, per-page geometries, th
 In `src/main.tsx`, import and render the sonner Toaster alongside `<App />`:
 
 ```tsx
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 ```
 
 Render inside the root, after `<App />`:
@@ -1640,144 +1646,141 @@ Render inside the root, after `<App />`:
 - [ ] **Step 2: Implement App.tsx**
 
 ```tsx
-import { useCallback, useRef, useState } from "react"
-import { toast } from "sonner"
-import { loadPdf, type LoadedPdf } from "@/lib/pdf/loader"
-import { exportPdf } from "@/lib/pdf/exporter"
-import {
-  useAnnotations,
-  type Annotation,
-} from "@/state/annotations"
-import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates"
-import { LandingScreen } from "@/components/LandingScreen"
-import { Viewer } from "@/components/Viewer"
-import { Toolbar, type Tool } from "@/components/Toolbar"
-import { OutputActions } from "@/components/OutputActions"
-import { SignatureDialog } from "@/components/SignatureDialog"
+import { useCallback, useRef, useState } from "react";
+import { toast } from "sonner";
+import { loadPdf, type LoadedPdf } from "@/lib/pdf/loader";
+import { exportPdf } from "@/lib/pdf/exporter";
+import { useAnnotations, type Annotation } from "@/state/annotations";
+import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates";
+import { LandingScreen } from "@/components/LandingScreen";
+import { Viewer } from "@/components/Viewer";
+import { Toolbar, type Tool } from "@/components/Toolbar";
+import { OutputActions } from "@/components/OutputActions";
+import { SignatureDialog } from "@/components/SignatureDialog";
 import {
   download,
   shareToWhatsApp,
   printPdf,
   makePdfFile,
   canShareFiles,
-} from "@/lib/share/output"
+} from "@/lib/share/output";
 
-const SCALE = 1.5
+const SCALE = 1.5;
 
 export default function App() {
-  const [pdf, setPdf] = useState<LoadedPdf | null>(null)
-  const [error, setError] = useState<string>()
-  const [tool, setTool] = useState<Tool>(null)
-  const [sigOpen, setSigOpen] = useState(false)
-  const [busy, setBusy] = useState(false)
-  const { items, dispatch } = useAnnotations()
-  const originalBytes = useRef<ArrayBuffer | null>(null)
-  const geometries = useRef<PageGeometry[]>([])
-  const pendingPlace = useRef<{ pageIndex: number; at: { x: number; y: number } } | null>(null)
+  const [pdf, setPdf] = useState<LoadedPdf | null>(null);
+  const [error, setError] = useState<string>();
+  const [tool, setTool] = useState<Tool>(null);
+  const [sigOpen, setSigOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const { items, dispatch } = useAnnotations();
+  const originalBytes = useRef<ArrayBuffer | null>(null);
+  const geometries = useRef<PageGeometry[]>([]);
+  const pendingPlace = useRef<{ pageIndex: number; at: { x: number; y: number } } | null>(null);
 
   const handleFile = useCallback(async (bytes: ArrayBuffer, _name: string) => {
     try {
-      originalBytes.current = bytes.slice(0)
-      const loaded = await loadPdf(bytes)
-      setPdf(loaded)
-      setError(undefined)
+      originalBytes.current = bytes.slice(0);
+      const loaded = await loadPdf(bytes);
+      setPdf(loaded);
+      setError(undefined);
     } catch {
-      setError("That file could not be opened as a PDF.")
-      toast.error("Invalid PDF file")
+      setError("That file could not be opened as a PDF.");
+      toast.error("Invalid PDF file");
     }
-  }, [])
+  }, []);
 
   const onGeometry = useCallback((pageIndex: number, geom: PageGeometry) => {
-    geometries.current[pageIndex] = geom
-  }, [])
+    geometries.current[pageIndex] = geom;
+  }, []);
 
   function nextId() {
-    return `ann_${items.length}_${Date.now()}`
+    return `ann_${items.length}_${Date.now()}`;
   }
 
   const onPlace = useCallback(
     (pageIndex: number, at: { x: number; y: number }) => {
-      if (!tool) return
+      if (!tool) return;
       if (tool === "text") {
-        const text = window.prompt("Enter text")
-        if (!text) return
+        const text = window.prompt("Enter text");
+        if (!text) return;
         const ann: Annotation = {
           id: nextId(),
           type: "text",
           pageIndex,
           rect: { x: at.x, y: at.y, width: Math.max(80, text.length * 12), height: 32 },
           payload: { text, fontSizePx: 24, color: "#1a1a1a" },
-        }
-        dispatch({ type: "add", annotation: ann })
+        };
+        dispatch({ type: "add", annotation: ann });
       } else {
         // signature or saved -> open dialog, remember where to drop it
-        pendingPlace.current = { pageIndex, at }
-        setSigOpen(true)
+        pendingPlace.current = { pageIndex, at };
+        setSigOpen(true);
       }
     },
     [tool, dispatch, items.length],
-  )
+  );
 
   function onSignatureConfirm(dataUrl: string) {
-    const place = pendingPlace.current ?? { pageIndex: 0, at: { x: 40, y: 40 } }
+    const place = pendingPlace.current ?? { pageIndex: 0, at: { x: 40, y: 40 } };
     const ann: Annotation = {
       id: nextId(),
       type: "signature",
       pageIndex: place.pageIndex,
       rect: { x: place.at.x, y: place.at.y, width: 200, height: 80 },
       payload: { dataUrl },
-    }
-    dispatch({ type: "add", annotation: ann })
-    pendingPlace.current = null
+    };
+    dispatch({ type: "add", annotation: ann });
+    pendingPlace.current = null;
   }
 
   const onChangeRect = useCallback(
     (id: string, rect: ScreenRect) => dispatch({ type: "update", id, patch: { rect } }),
     [dispatch],
-  )
-  const onRemove = useCallback((id: string) => dispatch({ type: "remove", id }), [dispatch])
+  );
+  const onRemove = useCallback((id: string) => dispatch({ type: "remove", id }), [dispatch]);
 
   async function buildPdf(): Promise<Uint8Array | null> {
-    if (!originalBytes.current) return null
-    return exportPdf(originalBytes.current, items, geometries.current)
+    if (!originalBytes.current) return null;
+    return exportPdf(originalBytes.current, items, geometries.current);
   }
 
   async function handleDownload() {
-    setBusy(true)
+    setBusy(true);
     try {
-      const out = await buildPdf()
-      if (out) download(out, "signed.pdf")
+      const out = await buildPdf();
+      if (out) download(out, "signed.pdf");
     } finally {
-      setBusy(false)
+      setBusy(false);
     }
   }
 
   async function handleShare() {
-    setBusy(true)
+    setBusy(true);
     try {
-      const out = await buildPdf()
+      const out = await buildPdf();
       if (out && !(await shareToWhatsApp(out, "signed.pdf"))) {
-        toast.message("Sharing not available — downloaded instead")
-        download(out, "signed.pdf")
+        toast.message("Sharing not available — downloaded instead");
+        download(out, "signed.pdf");
       }
     } finally {
-      setBusy(false)
+      setBusy(false);
     }
   }
 
   async function handlePrint() {
-    setBusy(true)
+    setBusy(true);
     try {
-      const out = await buildPdf()
-      if (out) printPdf(out)
+      const out = await buildPdf();
+      if (out) printPdf(out);
     } finally {
-      setBusy(false)
+      setBusy(false);
     }
   }
 
-  if (!pdf) return <LandingScreen onFile={handleFile} error={error} />
+  if (!pdf) return <LandingScreen onFile={handleFile} error={error} />;
 
-  const shareProbe = makePdfFile(new Uint8Array([1]), "x.pdf")
+  const shareProbe = makePdfFile(new Uint8Array([1]), "x.pdf");
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -1802,7 +1805,7 @@ export default function App() {
       <Toolbar tool={tool} onTool={setTool} />
       <SignatureDialog open={sigOpen} onOpenChange={setSigOpen} onConfirm={onSignatureConfirm} />
     </div>
-  )
+  );
 }
 ```
 
@@ -1827,6 +1830,7 @@ git commit -m "feat: wire app state machine and sign/export flow"
 ## Task 16: PWA + WhatsApp Share Target
 
 **Files:**
+
 - Modify: `vite.config.ts` (add vite-plugin-pwa)
 - Create: `src/lib/pwa/shareTarget.ts`
 - Modify: `src/App.tsx` (consume shared file on launch)
@@ -1845,11 +1849,11 @@ npm install -D vite-plugin-pwa
 Replace `vite.config.ts` with:
 
 ```ts
-import path from "path"
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
-import tailwindcss from "@tailwindcss/vite"
-import { VitePWA } from "vite-plugin-pwa"
+import path from "path";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   plugins: [
@@ -1887,37 +1891,37 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
   },
-})
+});
 ```
 
 - [ ] **Step 3: Create the custom service worker `src/sw.ts`**
 
 ```ts
 /// <reference lib="webworker" />
-import { precacheAndRoute } from "workbox-precaching"
+import { precacheAndRoute } from "workbox-precaching";
 
-declare const self: ServiceWorkerGlobalScope
+declare const self: ServiceWorkerGlobalScope;
 
-precacheAndRoute(self.__WB_MANIFEST)
+precacheAndRoute(self.__WB_MANIFEST);
 
-const SHARED_PDF_CACHE = "shared-pdf"
+const SHARED_PDF_CACHE = "shared-pdf";
 
 self.addEventListener("fetch", (event: FetchEvent) => {
-  const url = new URL(event.request.url)
+  const url = new URL(event.request.url);
   if (event.request.method === "POST" && url.pathname === "/share-target") {
     event.respondWith(
       (async () => {
-        const form = await event.request.formData()
-        const file = form.get("file")
+        const form = await event.request.formData();
+        const file = form.get("file");
         if (file instanceof File) {
-          const cache = await caches.open(SHARED_PDF_CACHE)
-          await cache.put("/__shared.pdf", new Response(file))
+          const cache = await caches.open(SHARED_PDF_CACHE);
+          await cache.put("/__shared.pdf", new Response(file));
         }
-        return Response.redirect("/?share-target=1", 303)
+        return Response.redirect("/?share-target=1", 303);
       })(),
-    )
+    );
   }
-})
+});
 ```
 
 - [ ] **Step 4: Install workbox-precaching (peer of injectManifest)**
@@ -1929,23 +1933,23 @@ npm install -D workbox-precaching
 - [ ] **Step 5: Create the share-target reader `src/lib/pwa/shareTarget.ts`**
 
 ```ts
-const SHARED_PDF_CACHE = "shared-pdf"
+const SHARED_PDF_CACHE = "shared-pdf";
 
 /** Returns shared PDF bytes if the app was launched via a share target, else null. */
 export async function readSharedPdf(): Promise<ArrayBuffer | null> {
-  const params = new URLSearchParams(window.location.search)
-  if (params.get("share-target") !== "1") return null
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("share-target") !== "1") return null;
   try {
-    const cache = await caches.open(SHARED_PDF_CACHE)
-    const res = await cache.match("/__shared.pdf")
-    if (!res) return null
-    const buf = await res.arrayBuffer()
-    await cache.delete("/__shared.pdf")
+    const cache = await caches.open(SHARED_PDF_CACHE);
+    const res = await cache.match("/__shared.pdf");
+    if (!res) return null;
+    const buf = await res.arrayBuffer();
+    await cache.delete("/__shared.pdf");
     // Clean the URL so a refresh doesn't re-trigger.
-    window.history.replaceState({}, "", "/")
-    return buf
+    window.history.replaceState({}, "", "/");
+    return buf;
   } catch {
-    return null
+    return null;
   }
 }
 ```
@@ -1955,17 +1959,17 @@ export async function readSharedPdf(): Promise<ArrayBuffer | null> {
 Add near the top of the `App` component body (after the hooks are declared), import `readSharedPdf` and add a `useEffect`:
 
 ```tsx
-import { useEffect } from "react"
-import { readSharedPdf } from "@/lib/pwa/shareTarget"
+import { useEffect } from "react";
+import { readSharedPdf } from "@/lib/pwa/shareTarget";
 ```
 
 ```tsx
 useEffect(() => {
   void (async () => {
-    const shared = await readSharedPdf()
-    if (shared) await handleFile(shared, "shared.pdf")
-  })()
-}, [handleFile])
+    const shared = await readSharedPdf();
+    if (shared) await handleFile(shared, "shared.pdf");
+  })();
+}, [handleFile]);
 ```
 
 - [ ] **Step 7: Add placeholder icons**
@@ -1994,6 +1998,7 @@ git commit -m "feat: add PWA manifest, service worker, and WhatsApp share target
 ## Task 17: README and final verification
 
 **Files:**
+
 - Create: `README.md`
 
 - [ ] **Step 1: Write README**
@@ -2044,4 +2049,7 @@ git commit -m "docs: add README"
 - **Spec coverage:** entry points (Task 16 PWA share target + Task 14 manual pick), draw/typed/saved signatures (Tasks 11, 15), place/move/resize (Task 12), flatten+export download/share/print (Tasks 9, 10, 15), Claude theme (Task 3), coordinate isolation (Task 5), error handling (invalid PDF Task 15, share fallback Task 15, corrupt storage Task 7), mobile-first toolbar/drawer (Tasks 14, 11). All spec sections map to a task.
 - **Types are consistent** across tasks: `ScreenRect`/`PageGeometry`/`PdfRect` (Task 5), `Annotation` union with `rect` + `payload` (Task 6) used identically by exporter (Task 9), overlay (Task 12), and App (Task 15). `LoadedPdf` interface (Task 8) consumed by Viewer/PdfPage (Task 13).
 - **No placeholders** except the intentional binary icon assets in Task 16 Step 7, which cannot be expressed as code.
+
+```
+
 ```

@@ -9,8 +9,13 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { SignatureCanvas, type SignatureCanvasHandle } from "@/components/SignatureCanvas";
-import { listSignatures, saveSignature, type SavedSignature } from "@/lib/signature/storage";
-import { UploadCloud, Eraser } from "lucide-react";
+import {
+  listSignatures,
+  saveSignature,
+  deleteSignature,
+  type SavedSignature,
+} from "@/lib/signature/storage";
+import { UploadCloud, Eraser, Trash2 } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -41,6 +46,13 @@ export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
     if (persist) saveSignature(dataUrl);
     onConfirm(dataUrl);
     onOpenChange(false);
+  }
+
+  function removeSaved(id: string) {
+    deleteSignature(id);
+    const next = listSignatures();
+    setSaved(next);
+    if (next.length === 0) setTab("draw");
   }
 
   function acceptImageFile(file: File | undefined) {
@@ -97,16 +109,27 @@ export function SignatureDialog({ open, onOpenChange, onConfirm }: Props) {
                 </p>
               )}
               {saved.map((s) => (
-                <button
-                  key={s.id}
-                  className="hover:border-primary rounded-md border border-border bg-card p-2 transition-colors"
-                  onClick={() => {
-                    onConfirm(s.dataUrl);
-                    onOpenChange(false);
-                  }}
-                >
-                  <img src={s.dataUrl} alt="saved signature" className="mx-auto max-h-20" />
-                </button>
+                <div key={s.id} className="relative rounded-md border border-border bg-card">
+                  <button
+                    className="hover:border-primary block w-full rounded-md p-2 transition-colors"
+                    onClick={() => {
+                      onConfirm(s.dataUrl);
+                      onOpenChange(false);
+                    }}
+                  >
+                    <img src={s.dataUrl} alt="saved signature" className="mx-auto max-h-20" />
+                  </button>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="outline"
+                    className="text-muted-foreground hover:text-destructive absolute top-1 right-1 size-7 rounded-full"
+                    onClick={() => removeSaved(s.id)}
+                    aria-label="Delete saved signature"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                </div>
               ))}
             </div>
           </TabsContent>

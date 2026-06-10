@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { loadPdf, type LoadedPdf } from "@/lib/pdf/loader";
 import { readSharedPdf } from "@/lib/pwa/shareTarget";
+import { readUrlPdf } from "@/lib/pwa/urlPdf";
 import { exportPdf } from "@/lib/pdf/exporter";
 import { useAnnotations, type Annotation } from "@/state/annotations";
 import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates";
@@ -51,8 +52,15 @@ export default function App() {
 
   useEffect(() => {
     void (async () => {
+      // Android PWA share target.
       const shared = await readSharedPdf();
-      if (shared) await handleFile(shared, "shared.pdf");
+      if (shared) {
+        await handleFile(shared, "shared.pdf");
+        return;
+      }
+      // iOS Shortcut: base64 PDF in the URL fragment.
+      const fromUrl = readUrlPdf();
+      if (fromUrl) await handleFile(fromUrl, "shared.pdf");
     })();
   }, [handleFile]);
 

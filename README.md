@@ -54,3 +54,22 @@ iOS Safari does not support the Web Share Target API — there, open the app URL
 and use **Open PDF** to pick the file manually. Re-sharing the signed PDF back to
 WhatsApp likewise requires Web Share with files (Android / Chromium); elsewhere it
 falls back to a download.
+
+## iOS Shortcut (share a PDF straight into the app)
+
+iOS can't register a web Share Target, but an iOS **Shortcut** in the Share Sheet
+gets you from WhatsApp to a loaded PDF in ~2 taps. The app reads a base64 PDF from
+the URL fragment (`/#pdf=<base64>`), which never leaves the device.
+
+Create the Shortcut (Shortcuts app → **+**):
+
+1. Shortcut settings → **Show in Share Sheet** → accept **Files / PDFs**.
+2. Action **Base64 Encode** — input: **Shortcut Input**. (Set _Line Breaks: None_.)
+3. Action **Text**: `https://doc-signer-beta.vercel.app/#pdf=` then insert the
+   **Base64 Encoded** variable right after the `=`.
+4. Action **Open URLs** — input: the **Text** from step 3.
+5. Name it e.g. "Sign PDF".
+
+Then: WhatsApp → a PDF → **Share** → **Sign PDF** → the app opens with the PDF
+loaded, ready to sign. Works best for typical documents; very large PDFs (>~2 MB)
+can exceed URL-length limits.

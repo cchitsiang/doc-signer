@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, act } from "@testing-library/react";
 import { LandingScreen } from "@/components/LandingScreen";
 
 function setUserAgent(ua: string) {
@@ -24,5 +24,18 @@ describe("LandingScreen iOS Shortcut link", () => {
     setUserAgent(WINDOWS_UA);
     render(<LandingScreen onFile={() => undefined} />);
     expect(screen.queryByRole("link", { name: /shortcut/i })).toBeNull();
+  });
+
+  it("shows the Install button after a beforeinstallprompt event", () => {
+    setUserAgent(WINDOWS_UA);
+    render(<LandingScreen onFile={() => undefined} />);
+    expect(screen.queryByRole("button", { name: /install/i })).toBeNull();
+
+    act(() => {
+      const e = new Event("beforeinstallprompt");
+      window.dispatchEvent(e);
+    });
+
+    expect(screen.getByRole("button", { name: /install/i })).toBeTruthy();
   });
 });

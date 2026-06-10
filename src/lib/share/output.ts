@@ -1,10 +1,15 @@
+function pdfBlob(bytes: Uint8Array): Blob {
+  // Cast needed: TS DOM lib types BlobPart's view as ArrayBufferView<ArrayBuffer>,
+  // which Uint8Array<ArrayBufferLike> does not satisfy.
+  return new Blob([bytes as BlobPart], { type: "application/pdf" });
+}
+
 export function makePdfFile(bytes: Uint8Array, filename: string): File {
-  const blob = new Blob([bytes], { type: "application/pdf" });
-  return new File([blob], filename, { type: "application/pdf" });
+  return new File([pdfBlob(bytes)], filename, { type: "application/pdf" });
 }
 
 export function download(bytes: Uint8Array, filename: string): void {
-  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+  const url = URL.createObjectURL(pdfBlob(bytes));
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
@@ -31,7 +36,7 @@ export async function shareToWhatsApp(bytes: Uint8Array, filename: string): Prom
 }
 
 export function printPdf(bytes: Uint8Array): void {
-  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+  const url = URL.createObjectURL(pdfBlob(bytes));
   const iframe = document.createElement("iframe");
   iframe.style.position = "fixed";
   iframe.style.right = "0";

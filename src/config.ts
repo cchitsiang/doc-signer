@@ -5,4 +5,4 @@
 // resulting https://www.icloud.com/shortcuts/<id> URL here.
 //
 // When set, the landing page shows a one-tap "Add the iOS shortcut" link on iOS.
-export const IOS_SHORTCUT_URL = "";
+export const IOS_SHORTCUT_URL = "https://www.icloud.com/shortcuts/75a85b3855864fb797e8d70dd73863be";

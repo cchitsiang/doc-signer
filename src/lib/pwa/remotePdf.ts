@@ -32,6 +32,19 @@ export function readPdfUrlParam(): string | null {
 }
 
 /**
+ * Reads the `?id=` handed back by the ephemeral upload flow and returns the
+ * same-origin `/api/pdf?id=...` URL to fetch it from (read-once). Returns null if
+ * absent or malformed.
+ */
+export function readUploadIdUrl(): string | null {
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (id && /^[a-f0-9]{16,64}$/.test(id)) {
+    return `${window.location.origin}/api/pdf?id=${id}`;
+  }
+  return null;
+}
+
+/**
  * Fetch a PDF from a remote URL on the client. Throws on network failure, a
  * cross-origin (CORS) block, or a non-OK response.
  */

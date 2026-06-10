@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { loadPdf, type LoadedPdf } from "@/lib/pdf/loader";
 import { readSharedPdf } from "@/lib/pwa/shareTarget";
 import { readUrlPdf } from "@/lib/pwa/urlPdf";
-import { readPdfUrlParam, fetchPdfFromUrl } from "@/lib/pwa/remotePdf";
+import { readPdfUrlParam, fetchPdfFromUrl, readUploadIdUrl } from "@/lib/pwa/remotePdf";
 import { exportPdf } from "@/lib/pdf/exporter";
 import { useAnnotations, type Annotation } from "@/state/annotations";
 import type { PageGeometry, ScreenRect } from "@/lib/pdf/coordinates";
@@ -65,9 +65,9 @@ export default function App() {
         await handleFile(fromData, "shared.pdf");
         return;
       }
-      // A PDF link: ?url= / #url= (client-side fetch; also used by the ephemeral
-      // upload flow, which hands back a same-origin /api/pdf?id=... URL).
-      const srcUrl = readPdfUrlParam();
+      // Ephemeral upload flow (iOS Shortcut): ?id=... → read-once /api/pdf?id=...
+      // Or a direct PDF link: ?url= / #url= (client-side fetch, CORS permitting).
+      const srcUrl = readUploadIdUrl() ?? readPdfUrlParam();
       if (srcUrl) {
         window.history.replaceState({}, "", window.location.pathname);
         try {

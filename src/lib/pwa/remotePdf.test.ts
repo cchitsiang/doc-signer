@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { readPdfUrlParam, fetchPdfFromUrl } from "@/lib/pwa/remotePdf";
+import { readPdfUrlParam, fetchPdfFromUrl, readUploadIdUrl } from "@/lib/pwa/remotePdf";
 
 afterEach(() => {
   window.history.replaceState({}, "", "/");
@@ -26,6 +26,23 @@ describe("readPdfUrlParam", () => {
   it("rejects non-http(s) schemes", () => {
     window.history.replaceState({}, "", "/?url=" + encodeURIComponent("javascript:alert(1)"));
     expect(readPdfUrlParam()).toBeNull();
+  });
+});
+
+describe("readUploadIdUrl", () => {
+  it("returns null when no id is present", () => {
+    window.history.replaceState({}, "", "/");
+    expect(readUploadIdUrl()).toBeNull();
+  });
+
+  it("builds a same-origin /api/pdf url from a valid id", () => {
+    window.history.replaceState({}, "", "/?id=abc123def4567890");
+    expect(readUploadIdUrl()).toBe(window.location.origin + "/api/pdf?id=abc123def4567890");
+  });
+
+  it("rejects a malformed id", () => {
+    window.history.replaceState({}, "", "/?id=../etc/passwd");
+    expect(readUploadIdUrl()).toBeNull();
   });
 });
 

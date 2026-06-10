@@ -1,73 +1,49 @@
-# React + TypeScript + Vite
+# Doc Signer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Client-side PDF signer. Open a PDF (shared from WhatsApp via PWA, or picked
+manually), add a drawn / typed / saved signature, and export by download, share,
+or print. No server — everything runs in your browser.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Vite + React + TypeScript · Tailwind v4 + shadcn/ui (Claude-style theme) ·
+pdf.js (render) · pdf-lib (write/flatten) · signature_pad · vite-plugin-pwa ·
+oxc (oxlint + oxfmt) · Vitest.
 
-## React Compiler
+## Develop
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Test
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
 ```
+npm test
+```
+
+## Lint / Format
+
+```
+npm run lint        # oxlint
+npm run fmt          # oxfmt (write)
+npm run fmt:check    # oxfmt (check only)
+```
+
+## Build
+
+```
+npm run build && npm run preview
+```
+
+## WhatsApp share target
+
+Install the app to your home screen (Android / Chromium). It then appears in
+WhatsApp's share sheet for PDF files: share a PDF, the app launches, and the
+viewer opens with the document ready to sign.
+
+iOS Safari does not support the Web Share Target API — there, open the app URL
+and use **Open PDF** to pick the file manually. Re-sharing the signed PDF back to
+WhatsApp likewise requires Web Share with files (Android / Chromium); elsewhere it
+falls back to a download.
